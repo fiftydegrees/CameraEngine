@@ -286,11 +286,12 @@ public class CameraEngine: NSObject {
     
     //MARK: Session management
     
-    public func startSession() {
+    public func startSession(completion: (Void) -> Void) {
         let session = self.session
         
         dispatch_async(self.sessionQueue) { () -> Void in
             session.startRunning()
+            completion()
         }
     }
     
@@ -395,18 +396,15 @@ public class CameraEngine: NSObject {
             if let currentDevice = self.cameraDevice.currentDevice {
                 try self.cameraInput.configureInputCamera(self.session, device: currentDevice)
             }
-            if let micDevice = self.cameraDevice.micCameraDevice {
-                try self.cameraInput.configureInputMic(self.session, device: micDevice)
-            }
         }
         catch CameraEngineDeviceInputErrorType.UnableToAddCamera {
             fatalError("[CameraEngine] unable to add camera as InputDevice")
         }
         catch CameraEngineDeviceInputErrorType.UnableToAddMic {
-            fatalError("[CameraEngine] unable to add mic as InputDevice")
+            print("[CameraEngine] unable to add mic as InputDevice")
         }
         catch {
-            fatalError("[CameraEngine] error initInputDevice")
+            print("[CameraEngine] error initInputDevice")
         }
     }
     
